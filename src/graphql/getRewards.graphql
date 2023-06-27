@@ -1,0 +1,10 @@
+query GetRewards($limit: Int!, $offset: Int !, $createdAt: order_by = asc) {
+  rewards(offset: $offset, limit: $limit) {
+    id
+    image
+    isAvailable
+    name
+    points
+    quantity
+  }
+}

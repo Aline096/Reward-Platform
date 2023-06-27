@@ -1,0 +1,24 @@
+mutation InsertReward(
+  $name: String!
+  $image: String!
+  $points: Int!
+  $isAvailable: Boolean!
+  $quantity: Int!
+) {
+  insert_rewards_one(
+    object: {
+      name: $name
+      image: $image
+      points: $points
+      isAvailable: $isAvailable
+      quantity: $quantity
+    }
+  ) {
+    id
+    name
+    image
+    points
+    isAvailable
+    quantity
+  }
+}
