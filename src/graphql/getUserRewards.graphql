@@ -1,0 +1,8 @@
+query GetUserRewards($userId: uuid) {
+  userRewards(where: { userId: { _eq: $userId } }) {
+    id
+    quantity
+    rewardId
+    status
+  }
+}

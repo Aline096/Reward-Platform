@@ -1,0 +1,12 @@
+query getNotifications($userId: uuid!) {
+  notifications(where: { userId: { _eq: $userId } }) {
+    id
+    message
+    user {
+      email
+      id
+      points
+      username
+    }
+  }
+}

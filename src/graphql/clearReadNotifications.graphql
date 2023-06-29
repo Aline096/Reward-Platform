@@ -1,0 +1,9 @@
+mutation ClearReadNotifications($userId: uuid!) {
+  delete_notifications(
+    where: { isRead: { _eq: true}, userId: { _eq: $userId } }
+  ) {
+    returning {
+      message
+    }
+  }
+}

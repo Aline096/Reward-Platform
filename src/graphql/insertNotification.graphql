@@ -1,0 +1,12 @@
+mutation InsertNotification($message: String!, $userId: uuid!) {
+  insert_notifications_one(object: { message: $message, userId: $userId }) {
+    id
+    message
+    user{
+      id
+      username
+      email
+      points
+    }
+  }
+}

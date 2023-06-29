@@ -1,0 +1,6 @@
+mutation DeleteReward($id: uuid!) {
+  delete_rewards_by_pk(id: $id) {
+    id
+    name
+  }
+}
