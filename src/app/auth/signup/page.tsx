@@ -11,21 +11,36 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { useLogin } from '@/components/hooks/useLogin'
+import { useSignup } from '@/components/hooks/useSignup'
 import LeftHome from '@/components/auth/LeftHome'
 
 
-const Login = () => {
-  const {form, onSubmit} = useLogin()
+const Signup = () => {
+  const {form, onSubmit} = useSignup()
 
   return (
     <div className="flex h-screen justify-center items-center ">
-      <LeftHome/>
+      <LeftHome />
       <div className="w-1/2 h-full mx-4 flex flex-col items-center justify-center lg:left-[50%] lg:mx-0 lg:w-1/2">
-        <h1>LOGIN</h1>
+        <h1>Register</h1>
         <div className="flex w-full flex-col items-center border-b border-blue-700 border-opacity-[.07] py-8 lg:w-3/5">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Username" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="email"
@@ -54,20 +69,20 @@ const Login = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="bg-blue-600 h-10 w-full hover:bg-blue-400">
-                Login
+              <Button type="submit" className="bg-blue-600 h-10 w-full">
+                Register
               </Button>
             </form>
           </Form>
         </div>
         <div className="mt-8 flex flex-col items-center justify-center gap-4 text-sm">
           <p>
-            Don&apos;t have account? &nbsp;
+            Already have account? &nbsp;
             <a
-              href="/auth/signup"
+              href="/auth/login"
               className="text-blue-500 self-center font-semibold text-primary hover:underline"
             >
-              Register
+              Login
             </a>
           </p>
         </div>
@@ -76,4 +91,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default Signup
