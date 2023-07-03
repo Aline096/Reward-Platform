@@ -6,7 +6,6 @@ const useGetRewards = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<null|string>(null)
 
-  useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(`/api/rewards`, {
@@ -24,16 +23,16 @@ const useGetRewards = () => {
         setRewards(rewards)
         setLoading(false)
       } catch (error) {
-        console.log(error)
         setError('Internal Server Error')
         setLoading(false)
       }
     }
 
-    fetchData()
+  useEffect(() => {
+ fetchData()
   }, [])
 
-  return { rewards, loading, error }
+  return { rewards, loading, error, refetch: fetchData }
 }
 
 export default useGetRewards

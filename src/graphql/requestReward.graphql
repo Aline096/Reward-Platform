@@ -1,0 +1,9 @@
+mutation RequestReward($quantity: Int!, $rewardId: uuid!, $status: String!, $userId: uuid!) {
+  insert_userRewards_one(object: {quantity: $quantity, rewardId: $rewardId, status: $status, userId: $userId}) {
+    id
+    quantity
+    rewardId
+    status
+    userId
+  }
+}

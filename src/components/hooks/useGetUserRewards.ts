@@ -12,12 +12,11 @@ const useGetUserRewards = () => {
     const fetchData = async () => {
       try {
         const user = await getUserInfo();
-        const response = await fetch(`/api/userRewards`, {
-          method: 'POST',
+        const response = await fetch(`/api/userRewards/${user?.id}`, {
+          method: 'GET',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ userId: user?.id }),
         })
 
         if (!response.ok) {

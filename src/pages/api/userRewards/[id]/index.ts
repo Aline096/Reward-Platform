@@ -3,11 +3,11 @@ import {
   GetUserRewardsDocument,
   RequestRewardDocument,
   RequestRewardMutation,
-} from '@/generated/graphql';
-import { client } from '@/lib/graphqlClient';
+} from '@/generated/graphql'
+import { client } from '@/lib/graphqlClient'
 
 interface QueryParams {
-  id: string;
+  id: string
   userId: string
   status: boolean
   reward: Reward
@@ -20,7 +20,6 @@ interface Reward {
   isAvailable: boolean
   quantity: number
   points: number
-
 }
 
 export default async function handler(req: any, res: any) {
@@ -33,24 +32,23 @@ export default async function handler(req: any, res: any) {
   }
 }
 
-async function handleGetRequest({ body }: { body: QueryParams }, res: any) {
+async function handleGetRequest(req:any,res: any) {
+
   try {
     const rewards: GetUserRewardsQuery = await client.request(
       GetUserRewardsDocument,
       {
-        userId: body,
+        userId: req.query.id,
       }
-    );
-    
-    return res.json({ message: 'Rewards retrieved successfully', rewards });
+    )
+
+    return res.json({ message: 'Rewards retrieved successfully', rewards })
   } catch (error) {
-    return res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({ error: 'Internal Server Error' })
   }
 }
 
-
 async function handlePostRequest({ body }: { body: QueryParams }, res: any) {
-  
   try {
     const userReward: RequestRewardMutation = await client.request(
       RequestRewardDocument,
@@ -60,10 +58,10 @@ async function handlePostRequest({ body }: { body: QueryParams }, res: any) {
         status: 'pending',
         quantity: body.quantity,
       }
-    )    
+    )
     return res.status(200).json({ message: 'Reward Requested.', userReward })
   } catch (error) {
-    console.log(error);
+    console.log(error)
     return res.json(error)
   }
 }

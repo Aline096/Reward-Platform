@@ -1,5 +1,5 @@
 mutation UpdatePoints($id: uuid!, $points: Int!) {
-  update_users_by_pk(pk_columns: { id: $id }, _inc: { points: $points }) {
+  update_users_by_pk(pk_columns: { id: $id }, _set: { points: $points }) {
     username
     email
     points
