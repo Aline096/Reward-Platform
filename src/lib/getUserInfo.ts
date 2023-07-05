@@ -12,10 +12,9 @@ const getUserInfo = async(
     const userInfo:any = jwtDecode(session)
     const user: GetUserQuery = await client.request(GetUserDocument, {
       id: userInfo.sub,
-    })
+    })  
     return user.users_by_pk
   } catch (error) {
-    console.log(error)
     return null
   }
 }

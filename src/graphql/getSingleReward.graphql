@@ -1,0 +1,10 @@
+query GetSingleReward($id: uuid!) {
+  rewards_by_pk(id: $id) {
+    id
+    image
+    isAvailable
+    name
+    points
+    quantity
+  }
+}

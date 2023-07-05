@@ -3,14 +3,15 @@ import loginSchema from '@/validation/loginSchema'
 import { useForm } from 'react-hook-form'
 import { useToast } from '@/components/ui/use-toast'
 import { useRouter } from 'next/navigation'
+import getUserInfo from '@/lib/getUserInfo'
 
 interface FormData {
   email: string
   password: string
 }
 export const useLogin = () => {
-  const router = useRouter()
   const { toast } = useToast()
+  const router = useRouter()
   const form = useForm<FormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -30,7 +31,6 @@ export const useLogin = () => {
         },
         body: JSON.stringify(formData),
       })
-      
       const body = await response.json()
 
       if (body.data?.user && body.data?.session) {
@@ -40,14 +40,23 @@ export const useLogin = () => {
           },
         } = body
         sessionStorage.setItem('session', JSON.stringify(access_token))
+        
+        const userInfo = await getUserInfo()
+        const userRole = userInfo?.role
+
         toast({
           title: 'Successfully logged in',
           description: '',
           variant: 'default',
         })
-        router.push('/')
+
+        if (userRole !== 'admin') {
+          router.push('/')
+        } else {
+          router.push('/dashboard')
+        }
       }
-      
+
       if (body?.error) {
         toast({
           title: body.error.message,
