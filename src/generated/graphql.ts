@@ -2823,6 +2823,18 @@ export type InsertRewardMutationVariables = Exact<{
 
 export type InsertRewardMutation = { __typename?: 'mutation_root', insert_rewards_one?: { __typename?: 'rewards', id: any, name?: string | null, image?: string | null, points?: number | null, isAvailable?: boolean | null, quantity?: number | null } | null };
 
+export type InsertUserMutationVariables = Exact<{
+  id: Scalars['uuid']['input'];
+  username: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  points: Scalars['Int']['input'];
+  role: Scalars['String']['input'];
+}>;
+
+
+export type InsertUserMutation = { __typename?: 'mutation_root', insert_users_one?: { __typename?: 'users', username: string, email: string, password: string, points: number, role: string } | null };
+
 export type UpdatePasswordMutationVariables = Exact<{
   id: Scalars['uuid']['input'];
   password: Scalars['String']['input'];
@@ -3006,6 +3018,31 @@ export const useInsertRewardMutation = <
     useMutation<InsertRewardMutation, TError, InsertRewardMutationVariables, TContext>(
       ['InsertReward'],
       (variables?: InsertRewardMutationVariables) => fetcher<InsertRewardMutation, InsertRewardMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, InsertRewardDocument, variables)(),
+      options
+    );
+export const InsertUserDocument = `
+    mutation InsertUser($id: uuid!, $username: String!, $email: String!, $password: String!, $points: Int!, $role: String!) {
+  insert_users_one(
+    object: {id: $id, username: $username, email: $email, password: $password, points: $points, role: $role}
+  ) {
+    username
+    email
+    password
+    points
+    role
+  }
+}
+    `;
+export const useInsertUserMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      options?: UseMutationOptions<InsertUserMutation, TError, InsertUserMutationVariables, TContext>
+    ) =>
+    useMutation<InsertUserMutation, TError, InsertUserMutationVariables, TContext>(
+      ['InsertUser'],
+      (variables?: InsertUserMutationVariables) => fetcher<InsertUserMutation, InsertUserMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, InsertUserDocument, variables)(),
       options
     );
 export const UpdatePasswordDocument = `

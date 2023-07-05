@@ -12,8 +12,8 @@ async function POST({ body }: { body: QueryParams }, res: any) {
       password: body.password,
     })
     return res.json({ data, error })
-  } catch (error) {
-    return res.json( error)
+  } catch (error: any) {
+    return res.json({ error: error.message })
   }
 }
 export default POST

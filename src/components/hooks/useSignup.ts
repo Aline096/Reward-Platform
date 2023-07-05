@@ -1,27 +1,30 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import loginSchema from '@/validation/loginSchema'
+import signupSchema from '@/validation/signupSchema'
 import { useForm } from 'react-hook-form'
 import { useToast } from '@/components/ui/use-toast'
 import { useRouter } from 'next/navigation'
 
 interface FormData {
+  username: string
   email: string
   password: string
 }
-export const useLogin = () => {
+export const useSignup = () => {
   const router = useRouter()
   const { toast } = useToast()
   const form = useForm<FormData>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(signupSchema),
     defaultValues: {
+      username: '',
       email: '',
       password: '',
     },
   })
 
   const onSubmit = async (formData: FormData) => {
+    
     try {
-      const response = await fetch(`/api/users/login`, {
+      const response = await fetch(`/api/users/signup`, {
         method: 'POST',
         mode: 'cors',
         headers: {
@@ -30,33 +33,23 @@ export const useLogin = () => {
         },
         body: JSON.stringify(formData),
       })
-      
       const body = await response.json()
+      if(body?.error) throw new Error('User already exists, check if you have verified your email')
 
-      if (body.data?.user && body.data?.session) {
-        const {
-          data: {
-            session: { access_token },
-          },
-        } = body
-        sessionStorage.setItem('session', JSON.stringify(access_token))
+      if (body.data.user?.identities?.length !== 0) {
         toast({
-          title: 'Successfully logged in',
+          title: 'Check your email for verification',
           description: '',
           variant: 'default',
         })
-        router.push('/')
+        router.push('/auth/login')
+      } else {
+        throw new Error('User already exists')
       }
       
-      if (body?.error) {
-        toast({
-          title: body.error.message,
-          variant: 'destructive',
-        })
-      }
     } catch (error: any) {
       toast({
-        title: error.message || 'Error occured',
+        title: error.message|| 'error occured',
         variant: 'destructive',
       })
     }
