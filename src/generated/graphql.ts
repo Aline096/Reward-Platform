@@ -2428,8 +2428,8 @@ export type Users = {
   /** An aggregate relationship */
   notifications_aggregate: Notifications_Aggregate;
   password: Scalars['String']['output'];
-  points: Scalars['Int']['output'];
-  role: Scalars['String']['output'];
+  points?: Maybe<Scalars['Int']['output']>;
+  role?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['timestamptz']['output'];
   /** An object relationship */
   user: Auth_Users;
@@ -2786,7 +2786,7 @@ export type GetNotificationsQueryVariables = Exact<{
 }>;
 
 
-export type GetNotificationsQuery = { __typename?: 'query_root', notifications: Array<{ __typename?: 'notifications', id: any, message?: string | null, user?: { __typename?: 'users', email: string, id: any, points: number, username: string } | null }> };
+export type GetNotificationsQuery = { __typename?: 'query_root', notifications: Array<{ __typename?: 'notifications', id: any, message?: string | null, user?: { __typename?: 'users', email: string, id: any, points?: number | null, username: string } | null }> };
 
 export type GetRewardsQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -2796,6 +2796,13 @@ export type GetRewardsQueryVariables = Exact<{
 
 
 export type GetRewardsQuery = { __typename?: 'query_root', rewards: Array<{ __typename?: 'rewards', id: any, image?: string | null, isAvailable?: boolean | null, name?: string | null, points?: number | null, quantity?: number | null }> };
+
+export type GetUserQueryVariables = Exact<{
+  id: Scalars['uuid']['input'];
+}>;
+
+
+export type GetUserQuery = { __typename?: 'query_root', users_by_pk?: { __typename?: 'users', id: any, email: string, points?: number | null, role?: string | null, username: string } | null };
 
 export type GetUserRewardsQueryVariables = Exact<{
   userId?: InputMaybe<Scalars['uuid']['input']>;
@@ -2810,7 +2817,7 @@ export type InsertNotificationMutationVariables = Exact<{
 }>;
 
 
-export type InsertNotificationMutation = { __typename?: 'mutation_root', insert_notifications_one?: { __typename?: 'notifications', id: any, message?: string | null, user?: { __typename?: 'users', id: any, username: string, email: string, points: number } | null } | null };
+export type InsertNotificationMutation = { __typename?: 'mutation_root', insert_notifications_one?: { __typename?: 'notifications', id: any, message?: string | null, user?: { __typename?: 'users', id: any, username: string, email: string, points?: number | null } | null } | null };
 
 export type InsertRewardMutationVariables = Exact<{
   name: Scalars['String']['input'];
@@ -2833,7 +2840,7 @@ export type InsertUserMutationVariables = Exact<{
 }>;
 
 
-export type InsertUserMutation = { __typename?: 'mutation_root', insert_users_one?: { __typename?: 'users', username: string, email: string, password: string, points: number, role: string } | null };
+export type InsertUserMutation = { __typename?: 'mutation_root', insert_users_one?: { __typename?: 'users', username: string, email: string, password: string, points?: number | null, role?: string | null } | null };
 
 export type UpdatePasswordMutationVariables = Exact<{
   id: Scalars['uuid']['input'];
@@ -2849,7 +2856,7 @@ export type UpdatePointsMutationVariables = Exact<{
 }>;
 
 
-export type UpdatePointsMutation = { __typename?: 'mutation_root', update_users_by_pk?: { __typename?: 'users', username: string, email: string, points: number } | null };
+export type UpdatePointsMutation = { __typename?: 'mutation_root', update_users_by_pk?: { __typename?: 'users', username: string, email: string, points?: number | null } | null };
 
 
 export const ClearReadNotificationsDocument = `
@@ -2943,6 +2950,30 @@ export const useGetRewardsQuery = <
     useQuery<GetRewardsQuery, TError, TData>(
       ['GetRewards', variables],
       fetcher<GetRewardsQuery, GetRewardsQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetRewardsDocument, variables),
+      options
+    );
+export const GetUserDocument = `
+    query GetUser($id: uuid!) {
+  users_by_pk(id: $id) {
+    id
+    email
+    points
+    role
+    username
+  }
+}
+    `;
+export const useGetUserQuery = <
+      TData = GetUserQuery,
+      TError = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      variables: GetUserQueryVariables,
+      options?: UseQueryOptions<GetUserQuery, TError, TData>
+    ) =>
+    useQuery<GetUserQuery, TError, TData>(
+      ['GetUser', variables],
+      fetcher<GetUserQuery, GetUserQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetUserDocument, variables),
       options
     );
 export const GetUserRewardsDocument = `
@@ -3068,7 +3099,7 @@ export const useUpdatePasswordMutation = <
     );
 export const UpdatePointsDocument = `
     mutation UpdatePoints($id: uuid!, $points: Int!) {
-  update_users_by_pk(pk_columns: {id: $id}, _set: {points: $points}) {
+  update_users_by_pk(pk_columns: {id: $id}, _inc: {points: $points}) {
     username
     email
     points

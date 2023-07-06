@@ -15,7 +15,7 @@ const useGetAccessToken = () => {
       });
     }
   }, []);
-  return { useEffect };
+  return { refetch: useEffect };
 };
 
 export default useGetAccessToken;

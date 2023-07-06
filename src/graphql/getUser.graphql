@@ -1,0 +1,9 @@
+query GetUser($id: uuid! ) {
+  users_by_pk(id: $id) {
+    id
+    email
+    points
+    role
+    username
+  }
+}
