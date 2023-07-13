@@ -136,6 +136,7 @@ export type Auth_Users = {
   recovery_token?: Maybe<Scalars['String']['output']>;
   role?: Maybe<Scalars['String']['output']>;
   updated_at?: Maybe<Scalars['timestamptz']['output']>;
+  username?: Maybe<Scalars['String']['output']>;
 };
 
 
@@ -231,6 +232,7 @@ export type Auth_Users_Bool_Exp = {
   recovery_token?: InputMaybe<String_Comparison_Exp>;
   role?: InputMaybe<String_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  username?: InputMaybe<String_Comparison_Exp>;
 };
 
 /** unique or primary key constraints on table "auth.users" */
@@ -312,6 +314,7 @@ export type Auth_Users_Insert_Input = {
   recovery_token?: InputMaybe<Scalars['String']['input']>;
   role?: InputMaybe<Scalars['String']['input']>;
   updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  username?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** aggregate max on columns */
@@ -347,6 +350,7 @@ export type Auth_Users_Max_Fields = {
   recovery_token?: Maybe<Scalars['String']['output']>;
   role?: Maybe<Scalars['String']['output']>;
   updated_at?: Maybe<Scalars['timestamptz']['output']>;
+  username?: Maybe<Scalars['String']['output']>;
 };
 
 /** aggregate min on columns */
@@ -382,6 +386,7 @@ export type Auth_Users_Min_Fields = {
   recovery_token?: Maybe<Scalars['String']['output']>;
   role?: Maybe<Scalars['String']['output']>;
   updated_at?: Maybe<Scalars['timestamptz']['output']>;
+  username?: Maybe<Scalars['String']['output']>;
 };
 
 /** response of any mutation on the table "auth.users" */
@@ -443,6 +448,7 @@ export type Auth_Users_Order_By = {
   recovery_token?: InputMaybe<Order_By>;
   role?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
+  username?: InputMaybe<Order_By>;
 };
 
 /** primary key columns input for table: auth.users */
@@ -525,7 +531,9 @@ export enum Auth_Users_Select_Column {
   /** column name */
   Role = 'role',
   /** column name */
-  UpdatedAt = 'updated_at'
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Username = 'username'
 }
 
 /** input type for updating data in table "auth.users" */
@@ -564,6 +572,7 @@ export type Auth_Users_Set_Input = {
   recovery_token?: InputMaybe<Scalars['String']['input']>;
   role?: InputMaybe<Scalars['String']['input']>;
   updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  username?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** aggregate stddev on columns */
@@ -629,6 +638,7 @@ export type Auth_Users_Stream_Cursor_Value_Input = {
   recovery_token?: InputMaybe<Scalars['String']['input']>;
   role?: InputMaybe<Scalars['String']['input']>;
   updated_at?: InputMaybe<Scalars['timestamptz']['input']>;
+  username?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** aggregate sum on columns */
@@ -704,7 +714,9 @@ export enum Auth_Users_Update_Column {
   /** column name */
   Role = 'role',
   /** column name */
-  UpdatedAt = 'updated_at'
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Username = 'username'
 }
 
 export type Auth_Users_Updates = {
@@ -2811,6 +2823,13 @@ export type GetUserQueryVariables = Exact<{
 
 export type GetUserQuery = { __typename?: 'query_root', users_by_pk?: { __typename?: 'users', id: any, email: string, points?: number | null, role?: string | null, username: string } | null };
 
+export type GetUserByEmailQueryVariables = Exact<{
+  email: Scalars['String']['input'];
+}>;
+
+
+export type GetUserByEmailQuery = { __typename?: 'query_root', users: Array<{ __typename?: 'users', id: any, email: string, points?: number | null, role?: string | null, username: string }> };
+
 export type GetUserRewardsQueryVariables = Exact<{
   userId?: InputMaybe<Scalars['uuid']['input']>;
 }>;
@@ -2850,12 +2869,12 @@ export type InsertUserMutationVariables = Exact<{
 export type InsertUserMutation = { __typename?: 'mutation_root', insert_users_one?: { __typename?: 'users', username: string, email: string, password: string, points?: number | null, role?: string | null } | null };
 
 export type UpdatePasswordMutationVariables = Exact<{
-  id: Scalars['uuid']['input'];
-  password: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+  encrypted_password: Scalars['String']['input'];
 }>;
 
 
-export type UpdatePasswordMutation = { __typename?: 'mutation_root', update_users_by_pk?: { __typename?: 'users', username: string, email: string, password: string } | null };
+export type UpdatePasswordMutation = { __typename?: 'mutation_root', update_auth_users?: { __typename?: 'auth_users_mutation_response', returning: Array<{ __typename?: 'auth_users', email?: string | null }> } | null };
 
 export type UpdatePointsMutationVariables = Exact<{
   id: Scalars['uuid']['input'];
@@ -3020,6 +3039,30 @@ export const useGetUserQuery = <
       fetcher<GetUserQuery, GetUserQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetUserDocument, variables),
       options
     );
+export const GetUserByEmailDocument = `
+    query GetUserByEmail($email: String!) {
+  users(where: {email: {_eq: $email}}) {
+    id
+    email
+    points
+    role
+    username
+  }
+}
+    `;
+export const useGetUserByEmailQuery = <
+      TData = GetUserByEmailQuery,
+      TError = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      variables: GetUserByEmailQueryVariables,
+      options?: UseQueryOptions<GetUserByEmailQuery, TError, TData>
+    ) =>
+    useQuery<GetUserByEmailQuery, TError, TData>(
+      ['GetUserByEmail', variables],
+      fetcher<GetUserByEmailQuery, GetUserByEmailQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetUserByEmailDocument, variables),
+      options
+    );
 export const GetUserRewardsDocument = `
     query GetUserRewards($userId: uuid) {
   userRewards(where: {userId: {_eq: $userId}}) {
@@ -3121,11 +3164,14 @@ export const useInsertUserMutation = <
       options
     );
 export const UpdatePasswordDocument = `
-    mutation UpdatePassword($id: uuid!, $password: String!) {
-  update_users_by_pk(pk_columns: {id: $id}, _set: {password: $password}) {
-    username
-    email
-    password
+    mutation UpdatePassword($email: String!, $encrypted_password: String!) {
+  update_auth_users(
+    where: {email: {_eq: $email}}
+    _set: {encrypted_password: $encrypted_password}
+  ) {
+    returning {
+      email
+    }
   }
 }
     `;

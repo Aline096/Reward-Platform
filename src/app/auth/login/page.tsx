@@ -93,7 +93,7 @@ const Login = () => {
         </div>
         <div className="mt-8 flex flex-col items-center justify-center gap-4 text-sm">
             <a
-              href="/auth/resetPassword"
+              href="/auth/passwordReset"
               className="text-blue-500 self-center font-semibold text-primary hover:underline"
               >
               Forgot your password?
