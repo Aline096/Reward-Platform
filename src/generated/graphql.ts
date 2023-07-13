@@ -2797,6 +2797,13 @@ export type GetRewardsQueryVariables = Exact<{
 
 export type GetRewardsQuery = { __typename?: 'query_root', rewards: Array<{ __typename?: 'rewards', id: any, image?: string | null, isAvailable?: boolean | null, name?: string | null, points?: number | null, quantity?: number | null }> };
 
+export type GetSingleRewardQueryVariables = Exact<{
+  id: Scalars['uuid']['input'];
+}>;
+
+
+export type GetSingleRewardQuery = { __typename?: 'query_root', rewards_by_pk?: { __typename?: 'rewards', id: any, image?: string | null, isAvailable?: boolean | null, name?: string | null, points?: number | null, quantity?: number | null } | null };
+
 export type GetUserQueryVariables = Exact<{
   id: Scalars['uuid']['input'];
 }>;
@@ -2857,6 +2864,18 @@ export type UpdatePointsMutationVariables = Exact<{
 
 
 export type UpdatePointsMutation = { __typename?: 'mutation_root', update_users_by_pk?: { __typename?: 'users', username: string, email: string, points?: number | null } | null };
+
+export type UpdateRewardMutationVariables = Exact<{
+  id: Scalars['uuid']['input'];
+  image?: InputMaybe<Scalars['String']['input']>;
+  isAvailable?: InputMaybe<Scalars['Boolean']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  points?: InputMaybe<Scalars['Int']['input']>;
+  quantity?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type UpdateRewardMutation = { __typename?: 'mutation_root', update_rewards_by_pk?: { __typename?: 'rewards', id: any, image?: string | null, isAvailable?: boolean | null, name?: string | null, points?: number | null, quantity?: number | null } | null };
 
 
 export const ClearReadNotificationsDocument = `
@@ -2950,6 +2969,31 @@ export const useGetRewardsQuery = <
     useQuery<GetRewardsQuery, TError, TData>(
       ['GetRewards', variables],
       fetcher<GetRewardsQuery, GetRewardsQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetRewardsDocument, variables),
+      options
+    );
+export const GetSingleRewardDocument = `
+    query GetSingleReward($id: uuid!) {
+  rewards_by_pk(id: $id) {
+    id
+    image
+    isAvailable
+    name
+    points
+    quantity
+  }
+}
+    `;
+export const useGetSingleRewardQuery = <
+      TData = GetSingleRewardQuery,
+      TError = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      variables: GetSingleRewardQueryVariables,
+      options?: UseQueryOptions<GetSingleRewardQuery, TError, TData>
+    ) =>
+    useQuery<GetSingleRewardQuery, TError, TData>(
+      ['GetSingleReward', variables],
+      fetcher<GetSingleRewardQuery, GetSingleRewardQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetSingleRewardDocument, variables),
       options
     );
 export const GetUserDocument = `
@@ -3116,5 +3160,32 @@ export const useUpdatePointsMutation = <
     useMutation<UpdatePointsMutation, TError, UpdatePointsMutationVariables, TContext>(
       ['UpdatePoints'],
       (variables?: UpdatePointsMutationVariables) => fetcher<UpdatePointsMutation, UpdatePointsMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, UpdatePointsDocument, variables)(),
+      options
+    );
+export const UpdateRewardDocument = `
+    mutation UpdateReward($id: uuid!, $image: String, $isAvailable: Boolean, $name: String, $points: Int, $quantity: Int) {
+  update_rewards_by_pk(
+    pk_columns: {id: $id}
+    _set: {image: $image, isAvailable: $isAvailable, name: $name, points: $points, quantity: $quantity}
+  ) {
+    id
+    image
+    isAvailable
+    name
+    points
+    quantity
+  }
+}
+    `;
+export const useUpdateRewardMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      options?: UseMutationOptions<UpdateRewardMutation, TError, UpdateRewardMutationVariables, TContext>
+    ) =>
+    useMutation<UpdateRewardMutation, TError, UpdateRewardMutationVariables, TContext>(
+      ['UpdateReward'],
+      (variables?: UpdateRewardMutationVariables) => fetcher<UpdateRewardMutation, UpdateRewardMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, UpdateRewardDocument, variables)(),
       options
     );

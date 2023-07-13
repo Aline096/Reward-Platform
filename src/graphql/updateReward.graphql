@@ -1,0 +1,26 @@
+mutation UpdateReward(
+  $id: uuid!
+  $image: String
+  $isAvailable: Boolean
+  $name: String
+  $points: Int
+  $quantity: Int
+) {
+  update_rewards_by_pk(
+    pk_columns: { id: $id }
+    _set: {
+      image: $image
+      isAvailable: $isAvailable
+      name: $name
+      points: $points
+      quantity: $quantity
+    }
+  ) {
+    id
+    image
+    isAvailable
+    name
+    points
+    quantity
+  }
+}
