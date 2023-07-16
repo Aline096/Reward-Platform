@@ -4,5 +4,10 @@ query GetUserRewards($userId: uuid) {
     quantity
     rewardId
     status
+    reward {
+      name
+      image
+      points
+    }
   }
 }

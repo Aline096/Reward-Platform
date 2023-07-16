@@ -5,7 +5,7 @@ import {
 import { client } from '@/lib/graphqlClient';
 
 interface QueryParams {
-  id: string;
+  userId: string;
 }
 
 async function POST({ body }: { body: QueryParams }, res: any) {
@@ -13,7 +13,7 @@ async function POST({ body }: { body: QueryParams }, res: any) {
     const rewards: GetUserRewardsQuery = await client.request(
       GetUserRewardsDocument,
       {
-        userId: body,
+        userId: body.userId,
       }
     );
     

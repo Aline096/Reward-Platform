@@ -14,7 +14,7 @@ const useGetAccessToken = () => {
         variant: 'default',
       });
     }
-  }, []);
+  });
   return { refetch: useEffect };
 };
 

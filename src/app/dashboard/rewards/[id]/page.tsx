@@ -1,4 +1,5 @@
 'use client'
+import { withAuth } from '@/app/auth/withAuth'
 import RewardForm from '@/components/Rewards/RewardForm'
 import useGetReward from '@/components/hooks/useGetReward'
 import { useUpdateReward } from '@/components/hooks/useUpdateReward'
@@ -26,4 +27,4 @@ const Rewards = () => {
   )
 }
 
-export default Rewards
+export default withAuth(Rewards);
