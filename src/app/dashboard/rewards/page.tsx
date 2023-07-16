@@ -6,9 +6,10 @@ import { useRouter } from 'next/navigation'
 import { Loader2Icon, Plus, } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import RewardsTable from '@/components/Rewards/RewardsTable'
+import { withAuth } from '@/app/auth/withAuth'
 import { IReward } from '@/lib/types'
 
-const Rewards = () => {
+const Rewards: React.FC = () => {
   const { rewards, loading, error } = useGetRewards()
   const { handleRewardDelete, leftRewards: updatedRewards } = useDeleteReward()
   const [allRewards, setAllRewards] = useState<IReward[]>([])
@@ -61,4 +62,4 @@ const Rewards = () => {
   )
 }
 
-export default Rewards
+export default withAuth(Rewards);

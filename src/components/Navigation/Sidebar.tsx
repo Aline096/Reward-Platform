@@ -5,6 +5,7 @@ import Image from 'next/image'
 import getUserInfo from '@/lib/getUserInfo'
 import bagLogo from '../../../public/assets/images/BAG-Logo.svg'
 import { LayoutDashboard, Gift, Home, User2 } from 'lucide-react'
+import { withAuth } from '@/app/auth/withAuth'
 
 const Sidebar = () => {
   const [activeTab, setActiveTab] = useState<number | null>(null)
@@ -151,4 +152,4 @@ const Sidebar = () => {
   )
 }
 
-export default Sidebar
+export default withAuth(Sidebar)
