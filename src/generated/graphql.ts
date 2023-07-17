@@ -2894,6 +2894,16 @@ export type InsertUserMutationVariables = Exact<{
 
 export type InsertUserMutation = { __typename?: 'mutation_root', insert_users_one?: { __typename?: 'users', username: string, email: string, password: string, points?: number | null, role?: string | null } | null };
 
+export type RequestRewardMutationVariables = Exact<{
+  quantity: Scalars['Int']['input'];
+  rewardId: Scalars['uuid']['input'];
+  status: Scalars['String']['input'];
+  userId: Scalars['uuid']['input'];
+}>;
+
+
+export type RequestRewardMutation = { __typename?: 'mutation_root', insert_userRewards_one?: { __typename?: 'userRewards', id: any, quantity?: number | null, rewardId?: any | null, status?: string | null, userId?: any | null } | null };
+
 export type UpdatePasswordMutationVariables = Exact<{
   email: Scalars['String']['input'];
   encrypted_password: Scalars['String']['input'];
@@ -2909,6 +2919,15 @@ export type UpdatePointsMutationVariables = Exact<{
 
 
 export type UpdatePointsMutation = { __typename?: 'mutation_root', update_users_by_pk?: { __typename?: 'users', username: string, email: string, points?: number | null } | null };
+
+export type UpdateQuantityMutationVariables = Exact<{
+  id: Scalars['uuid']['input'];
+  quantity: Scalars['Int']['input'];
+  isAvailable: Scalars['Boolean']['input'];
+}>;
+
+
+export type UpdateQuantityMutation = { __typename?: 'mutation_root', update_rewards_by_pk?: { __typename?: 'rewards', name?: string | null, image?: string | null, quantity?: number | null, points?: number | null, isAvailable?: boolean | null } | null };
 
 export type UpdateRewardMutationVariables = Exact<{
   id: Scalars['uuid']['input'];
@@ -3170,6 +3189,31 @@ export const useInsertUserMutation = <
       (variables?: InsertUserMutationVariables) => fetcher<InsertUserMutation, InsertUserMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, InsertUserDocument, variables)(),
       options
     );
+export const RequestRewardDocument = `
+    mutation RequestReward($quantity: Int!, $rewardId: uuid!, $status: String!, $userId: uuid!) {
+  insert_userRewards_one(
+    object: {quantity: $quantity, rewardId: $rewardId, status: $status, userId: $userId}
+  ) {
+    id
+    quantity
+    rewardId
+    status
+    userId
+  }
+}
+    `;
+export const useRequestRewardMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      options?: UseMutationOptions<RequestRewardMutation, TError, RequestRewardMutationVariables, TContext>
+    ) =>
+    useMutation<RequestRewardMutation, TError, RequestRewardMutationVariables, TContext>(
+      ['RequestReward'],
+      (variables?: RequestRewardMutationVariables) => fetcher<RequestRewardMutation, RequestRewardMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, RequestRewardDocument, variables)(),
+      options
+    );
 export const UpdatePasswordDocument = `
     mutation UpdatePassword($email: String!, $encrypted_password: String!) {
   update_auth_users(
@@ -3196,7 +3240,7 @@ export const useUpdatePasswordMutation = <
     );
 export const UpdatePointsDocument = `
     mutation UpdatePoints($id: uuid!, $points: Int!) {
-  update_users_by_pk(pk_columns: {id: $id}, _inc: {points: $points}) {
+  update_users_by_pk(pk_columns: {id: $id}, _set: {points: $points}) {
     username
     email
     points
@@ -3213,6 +3257,32 @@ export const useUpdatePointsMutation = <
     useMutation<UpdatePointsMutation, TError, UpdatePointsMutationVariables, TContext>(
       ['UpdatePoints'],
       (variables?: UpdatePointsMutationVariables) => fetcher<UpdatePointsMutation, UpdatePointsMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, UpdatePointsDocument, variables)(),
+      options
+    );
+export const UpdateQuantityDocument = `
+    mutation UpdateQuantity($id: uuid!, $quantity: Int!, $isAvailable: Boolean!) {
+  update_rewards_by_pk(
+    pk_columns: {id: $id}
+    _set: {quantity: $quantity, isAvailable: $isAvailable}
+  ) {
+    name
+    image
+    quantity
+    points
+    isAvailable
+  }
+}
+    `;
+export const useUpdateQuantityMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      options?: UseMutationOptions<UpdateQuantityMutation, TError, UpdateQuantityMutationVariables, TContext>
+    ) =>
+    useMutation<UpdateQuantityMutation, TError, UpdateQuantityMutationVariables, TContext>(
+      ['UpdateQuantity'],
+      (variables?: UpdateQuantityMutationVariables) => fetcher<UpdateQuantityMutation, UpdateQuantityMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, UpdateQuantityDocument, variables)(),
       options
     );
 export const UpdateRewardDocument = `

@@ -1,0 +1,9 @@
+mutation UpdateQuantity($id: uuid!, $quantity: Int!,$isAvailable: Boolean!) {
+  update_rewards_by_pk(pk_columns: { id: $id }, _set: { quantity: $quantity, isAvailable: $isAvailable }) {
+    name
+    image
+    quantity
+    points
+    isAvailable
+  }
+}

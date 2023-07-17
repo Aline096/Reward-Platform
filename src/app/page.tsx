@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import {
   Table,
@@ -15,7 +15,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { useUpdatePoints } from '@/components/hooks/useUpdatePoints';
@@ -28,23 +28,30 @@ import useGetAccessToken from '@/components/hooks/useGetAccessToken';
 import { withAuth } from './auth/withAuth';
 import { NavigationMenuBar } from '@/components/Navigation/Menubar';
 import useGetUserRewards from '@/components/hooks/useGetUserRewards';
+import ClaimDialog from '@/components/Rewards/ClaimDialog'
+import { useRequestReward } from '@/components/hooks/useRequestReward'
 
 const Home: React.FC = () => {
   const [isUserRewards, setIsUserRewards] = useState(false);
   const [isAllRewards, setIsAllRewards] = useState(false);
   const { onSubmit, loading: loadPoints } = useUpdatePoints();
   const { userData, loading: loadUser, refetch: refetchUser } = useGetUser();
-  const { rewards, loading: loadRewards } = useGetRewards();
+  const { rewards, loading: loadRewards,refetch:refetchRewards } = useGetRewards()
   const { userRewards, loading: loadUserRewards } = useGetUserRewards();
   const { refetch: fetchToken } = useGetAccessToken();
   fetchToken;
+  const { handleClaimReward } = useRequestReward()
+     useEffect(() => {
+     refetchRewards()
+   }, [refetchRewards])
+
 
   const renderPointsButton = () => (
     <Button
       type="button"
       className="bg-blue-600 m-5 h-10 hover:bg-blue-400"
       onClick={async () => {
-        await onSubmit();
+        await onSubmit(10000,0);
         refetchUser();
       }}
     >
@@ -165,13 +172,13 @@ const Home: React.FC = () => {
                     </TableCell>
                     <TableCell className="text-right">
                       {reward?.isAvailable ? (
-                        <Button
-                          type="button"
-                          className="bg-blue-400 h-5 hover:bg-blue-600"
-                          // onClick={onSubmit}
-                        >
-                          Buy
-                        </Button>
+                        <ClaimDialog
+                          reward={reward}
+                          handleClaimReward={handleClaimReward}
+                          userData={userData}
+                          refetch={refetchUser}
+                          refetchRewards={refetchRewards}
+                        />
                       ) : (
                         ''
                       )}
@@ -184,7 +191,7 @@ const Home: React.FC = () => {
 
       <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left"></div>
     </main>
-  );
-};
+  )
+}
 
 export default withAuth(Home);
