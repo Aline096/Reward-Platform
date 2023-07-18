@@ -1,8 +1,8 @@
 import {
-  GetUserRewardsQuery,
-  GetUserRewardsDocument,
   RequestRewardDocument,
   RequestRewardMutation,
+  GetAllUserRewardsQuery,
+  GetAllUserRewardsDocument,
 } from '@/generated/graphql';
 import { client } from '@/lib/graphqlClient';
 
@@ -35,12 +35,13 @@ export default async function handler(req: any, res: any) {
 
 async function handleGetRequest({ body }: { body: QueryParams }, res: any) {
   try {
-    const rewards: GetUserRewardsQuery = await client.request(
-      GetUserRewardsDocument,
+    const rewards: GetAllUserRewardsQuery = await client.request(
+      GetAllUserRewardsDocument,
       {
-        userId: body,
+        limit: 10,
+        offset: 0,
       }
-    );
+    )
     
     return res.json({ message: 'Rewards retrieved successfully', rewards });
   } catch (error) {
