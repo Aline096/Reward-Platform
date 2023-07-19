@@ -1,0 +1,18 @@
+mutation UpdateStatus($id: uuid!, $status: String!) {
+  update_userRewards_by_pk(pk_columns: { id: $id }, _set: { status: $status }) {
+    id
+    quantity
+    reward {
+      id
+      image
+      name
+    }
+    rewardId
+    userId
+    user {
+      id
+      email
+      username
+    }
+  }
+}

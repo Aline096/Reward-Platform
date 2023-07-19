@@ -2826,6 +2826,14 @@ export type DeleteRewardMutationVariables = Exact<{
 
 export type DeleteRewardMutation = { __typename?: 'mutation_root', delete_rewards_by_pk?: { __typename?: 'rewards', id: any, name?: string | null } | null };
 
+export type GetAllUserRewardsQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
+}>;
+
+
+export type GetAllUserRewardsQuery = { __typename?: 'query_root', userRewards: Array<{ __typename?: 'userRewards', id: any, quantity?: number | null, rewardId?: any | null, status?: string | null, userId?: any | null, user?: { __typename?: 'users', id: any, email: string, username: string } | null, reward?: { __typename?: 'rewards', id: any, image?: string | null, name?: string | null, quantity?: number | null } | null }> };
+
 export type GetNotificationsQueryVariables = Exact<{
   userId: Scalars['uuid']['input'];
 }>;
@@ -2941,6 +2949,14 @@ export type UpdateRewardMutationVariables = Exact<{
 
 export type UpdateRewardMutation = { __typename?: 'mutation_root', update_rewards_by_pk?: { __typename?: 'rewards', id: any, image?: string | null, isAvailable?: boolean | null, name?: string | null, points?: number | null, quantity?: number | null } | null };
 
+export type UpdateStatusMutationVariables = Exact<{
+  id: Scalars['uuid']['input'];
+  status: Scalars['String']['input'];
+}>;
+
+
+export type UpdateStatusMutation = { __typename?: 'mutation_root', update_userRewards_by_pk?: { __typename?: 'userRewards', id: any, quantity?: number | null, rewardId?: any | null, userId?: any | null, reward?: { __typename?: 'rewards', id: any, image?: string | null, name?: string | null } | null, user?: { __typename?: 'users', id: any, email: string, username: string } | null } | null };
+
 
 export const ClearReadNotificationsDocument = `
     mutation ClearReadNotifications($userId: uuid!) {
@@ -2981,6 +2997,41 @@ export const useDeleteRewardMutation = <
     useMutation<DeleteRewardMutation, TError, DeleteRewardMutationVariables, TContext>(
       ['DeleteReward'],
       (variables?: DeleteRewardMutationVariables) => fetcher<DeleteRewardMutation, DeleteRewardMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, DeleteRewardDocument, variables)(),
+      options
+    );
+export const GetAllUserRewardsDocument = `
+    query GetAllUserRewards($limit: Int!, $offset: Int!) {
+  userRewards(limit: $limit, offset: $offset) {
+    id
+    quantity
+    rewardId
+    status
+    userId
+    user {
+      id
+      email
+      username
+    }
+    reward {
+      id
+      image
+      name
+      quantity
+    }
+  }
+}
+    `;
+export const useGetAllUserRewardsQuery = <
+      TData = GetAllUserRewardsQuery,
+      TError = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      variables: GetAllUserRewardsQueryVariables,
+      options?: UseQueryOptions<GetAllUserRewardsQuery, TError, TData>
+    ) =>
+    useQuery<GetAllUserRewardsQuery, TError, TData>(
+      ['GetAllUserRewards', variables],
+      fetcher<GetAllUserRewardsQuery, GetAllUserRewardsQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetAllUserRewardsDocument, variables),
       options
     );
 export const GetNotificationsDocument = `
@@ -3310,5 +3361,37 @@ export const useUpdateRewardMutation = <
     useMutation<UpdateRewardMutation, TError, UpdateRewardMutationVariables, TContext>(
       ['UpdateReward'],
       (variables?: UpdateRewardMutationVariables) => fetcher<UpdateRewardMutation, UpdateRewardMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, UpdateRewardDocument, variables)(),
+      options
+    );
+export const UpdateStatusDocument = `
+    mutation UpdateStatus($id: uuid!, $status: String!) {
+  update_userRewards_by_pk(pk_columns: {id: $id}, _set: {status: $status}) {
+    id
+    quantity
+    reward {
+      id
+      image
+      name
+    }
+    rewardId
+    userId
+    user {
+      id
+      email
+      username
+    }
+  }
+}
+    `;
+export const useUpdateStatusMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      dataSource: { endpoint: string, fetchParams?: RequestInit },
+      options?: UseMutationOptions<UpdateStatusMutation, TError, UpdateStatusMutationVariables, TContext>
+    ) =>
+    useMutation<UpdateStatusMutation, TError, UpdateStatusMutationVariables, TContext>(
+      ['UpdateStatus'],
+      (variables?: UpdateStatusMutationVariables) => fetcher<UpdateStatusMutation, UpdateStatusMutationVariables>(dataSource.endpoint, dataSource.fetchParams || {}, UpdateStatusDocument, variables)(),
       options
     );

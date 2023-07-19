@@ -53,7 +53,7 @@ export const useLogin = () => {
         if (userRole !== 'admin') {
           router.push('/')
         } else {
-          router.push('/dashboard')
+          router.push('/dashboard/rewards')
         }
       }
 
