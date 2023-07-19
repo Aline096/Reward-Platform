@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation'
 
 interface FormData {
   name: string
-  image: string
+  image: any
   points: number
   isAvailable: boolean
   quantity: number
@@ -19,11 +19,16 @@ export const useCreateReward = () => {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const { toast } = useToast()
-  const [file, setFile] = useState<string>('')
   const [isUploading, setIsUploading] = useState<boolean>(false)
-  const [previewImage, setPreviewImage] = useState(null)
+  const [newImage, setNewImage] = useState('')
 
-  const form = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+    watch,
+  } = useForm<FormData>({
     resolver: zodResolver(rewardSchema),
     defaultValues: {
       name: '',
@@ -34,50 +39,62 @@ export const useCreateReward = () => {
     },
   })
 
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const imageInput = event.target as HTMLInputElement
-    if (imageInput.files !== null) {
-      const image = imageInput.files[0]
-      setIsUploading(true)
-      const response = await cloudinaryService.upload(image)
-      setFile(response.fileUrl)
-      setIsUploading(false)
-      setPreviewImage(response.fileUrl)
-    }    
-  }
+  const watchImage = watch('image')
+  useEffect(() => {
+    if (watchImage && watchImage.length === 1) {
+      setNewImage(URL.createObjectURL(watchImage[0]))
+    }
+  }, [watchImage])
 
   const onSubmit = async (formData: FormData) => {
-    formData.image = file
     setLoading(true)
-    console.log(previewImage);
-    try {
-      const response = await fetch(`/api/rewards`, {
-        method: 'POST',
-        mode: 'cors',
-        headers: {
-          'content-type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      })
+    const response = await cloudinaryService.upload(formData.image[0])
 
-      const body = await response.json()
-      console.log(body)
-      form.reset()
+    if (response.success === true) {
+      const uploadedImage = response.fileUrl
+      formData.image = uploadedImage
+
+      try {
+        const response = await fetch(`/api/rewards`, {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        })
+
+        const body = await response.json()
+        reset()
+        toast({
+          title: body.message,
+          variant: 'default',
+        })
+        setLoading(false)
+        router.push('/dashboard/rewards')
+      } catch (error: any) {
+        toast({
+          title: error.message || 'Error occurred',
+          variant: 'destructive',
+        })
+        setLoading(false)
+      }
+    } else {
       toast({
-        title: body.message,
-        variant: 'default',
-      })
-      setLoading(false)
-      router.push('/dashboard/rewards')
-    } catch (error: any) {
-      toast({
-        title: error.message || 'Error occurred',
+        title: 'Invalid Image',
         variant: 'destructive',
       })
       setLoading(false)
     }
   }
-  return { form, onSubmit, handleFileChange, isUploading, loading, previewImage }
+
+  return {
+    register,
+    handleSubmit,
+    onSubmit,
+    isUploading,
+    loading,
+    errors,
+    newImage,
+  }
 }

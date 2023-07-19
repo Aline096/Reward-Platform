@@ -1,0 +1,20 @@
+query GetAllUserRewards($limit: Int!, $offset: Int!) {
+  userRewards(limit: $limit, offset: $offset) {
+    id
+    quantity
+    rewardId
+    status
+    userId
+    user {
+      id
+      email
+      username
+    }
+    reward {
+      id
+      image
+      name
+      quantity
+    }
+  }
+}

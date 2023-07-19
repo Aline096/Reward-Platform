@@ -9,7 +9,7 @@ import useGetReward from './useGetReward'
 
 interface FormData {
   name: string
-  image: string
+  image: any
   points: number
   isAvailable: boolean
   quantity: number
@@ -17,49 +17,48 @@ interface FormData {
 
 export const useUpdateReward = (id: string | undefined) => {
   const { toast } = useToast()
-  const [file, setFile] = useState<string>('')
   const [isUploading, setIsUploading] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
-  const { reward, loading: rewardLoading } = useGetReward(id) 
-    const [oldImage, setOldImage] = useState<any>([])
-
+  const { reward, loading: rewardLoading } = useGetReward(id)
+  const [oldImage, setOldImage] = useState<any>([])
+  const [newImage, setNewImage] = useState('')
 
   const router = useRouter()
 
-  const form = useForm<FormData>({
-    resolver: zodResolver(rewardSchema),
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors },
+    watch,
+  } = useForm<FormData>({
     defaultValues: {
       name: '',
-      image: '',
+      image: oldImage,
       points: 0,
       isAvailable: false,
       quantity: 0,
     },
   })
-   useEffect(() => {
-     if (reward) {
-       
-       setOldImage(reward.image)
-       form.setValue('name', reward.name)
-       form.setValue('points', reward.points.toString())
-       form.setValue('isAvailable', reward.isAvailable)
-       form.setValue('quantity', reward.quantity.toString())
-       form.setValue('image', oldImage)
-     }
-   }, [reward,form,oldImage])
 
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const imageInput = event.target as HTMLInputElement
-    if (imageInput.files !== null) {
-      const image = imageInput.files[0]
-      setIsUploading(true)
-      const response = await cloudinaryService.upload(image)
-      setFile(response.fileUrl)
-      setIsUploading(false)
+  const watchImage = watch('image')
+  useEffect(() => {
+    if (watchImage && watchImage.length === 1) {
+      setNewImage(URL.createObjectURL(watchImage[0]))
     }
-  }
+  }, [watchImage])
+
+  useEffect(() => {
+    if (reward) {
+      setOldImage(reward.image)
+      setValue('name', reward.name)
+      setValue('points', reward.points.toString())
+      setValue('isAvailable', reward.isAvailable)
+      setValue('quantity', reward.quantity.toString())
+      setValue('image', oldImage)
+    }
+  }, [reward, setValue, oldImage])
 
   const handleUpdateReward = async (reward: any) => {
     reward.id = id
@@ -75,7 +74,7 @@ export const useUpdateReward = (id: string | undefined) => {
 
       if (response.ok) {
         const body = await response.json()
-        form.reset()
+        reset()
         toast({
           title: body.message,
           variant: 'default',
@@ -96,8 +95,18 @@ export const useUpdateReward = (id: string | undefined) => {
   }
 
   const onSubmit = async (formData: FormData) => {
-    formData.image = file
+    let uploadedImage
+    setLoading(true)
 
+    if (typeof formData.image !== 'string') {
+      setOldImage(URL.createObjectURL(formData.image[0]))
+      const uploadImage = await cloudinaryService.upload(formData.image[0])
+      uploadedImage = uploadImage.fileUrl
+    } else {
+      uploadedImage = oldImage
+    }
+
+    formData.image = uploadedImage
     try {
       await handleUpdateReward(formData)
     } catch (error: any) {
@@ -108,5 +117,14 @@ export const useUpdateReward = (id: string | undefined) => {
     }
   }
 
-  return { form, onSubmit, handleFileChange, isUploading,loading }
+  return {
+    register,
+    handleSubmit,
+    onSubmit,
+    isUploading,
+    loading,
+    oldImage,
+    errors,
+    newImage,
+  }
 }
