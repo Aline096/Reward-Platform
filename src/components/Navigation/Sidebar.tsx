@@ -1,25 +1,25 @@
-'use client'
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
-import getUserInfo from '@/lib/getUserInfo'
-import bagLogo from '../../../public/assets/images/BAG-Logo.svg'
-import { LayoutDashboard, Gift, Home, User2 } from 'lucide-react'
-import { withAuth } from '@/app/auth/withAuth'
+'use client';
+import { useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import bagLogo from '../../../public/assets/images/BAG-Logo.svg';
+import {
+  LayoutDashboard,
+  Gift,
+  Home,
+  User2,
+  Loader2Icon,
+  LogOutIcon,
+} from 'lucide-react';
+import { withAuth } from '@/app/auth/withAuth';
+import { useLogout } from '../hooks/useLogout';
+import { Button } from '../ui/button';
 
 const Sidebar = () => {
-  const [activeTab, setActiveTab] = useState<number | null>(null)
-  const [inSmallMode, setInSmallMode] = useState(false)
-  const [activeUserRole, setActiveUserRole] = useState<string | null>(null)
-
-
-
-  // useEffect(() => {
-  //   const info = getUserInfo()
-  //   if (info) {
-  //     // setActiveUserRole(info.role)
-  //   }
-  // }, [])
+  const [activeTab, setActiveTab] = useState<number | null>(null);
+  const [inSmallMode, setInSmallMode] = useState(false);
+  const { onSubmit, isLoading } = useLogout();
+  const [activeUserRole, setActiveUserRole] = useState<string | null>(null);
 
   const menuItems = [
     {
@@ -31,7 +31,7 @@ const Sidebar = () => {
     {
       path: '/dashboard/userRewards',
       name: 'User Rewards',
-      icon: <User2/>,
+      icon: <User2 />,
       index: 1,
     },
     {
@@ -46,7 +46,7 @@ const Sidebar = () => {
       icon: <Home />,
       index: 3,
     },
-  ]
+  ];
 
   return (
     <div className="h-[100vh] md:sticky top-0 shadow-sm mb-2">
@@ -148,8 +148,22 @@ const Sidebar = () => {
           </Link>
         ))}
       </div>
+      <div className="flex justify-center">
+        <Button variant={'outline'} onClick={onSubmit}>
+          {isLoading ? (
+            <Loader2Icon
+              size={20}
+              color="#00ff04"
+              className="animate-spin inline"
+            />
+          ) : (
+            <LogOutIcon color="#ff8585" />
+          )}
+          {!isLoading && !inSmallMode && 'Logout'}
+        </Button>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default withAuth(Sidebar)
+export default withAuth(Sidebar);

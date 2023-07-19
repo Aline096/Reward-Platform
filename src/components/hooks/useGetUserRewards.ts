@@ -1,43 +1,45 @@
-import { useEffect, useState } from 'react'
-import { IUserReward } from '@/lib/types'
-import getUserInfo from '@/lib/getUserInfo'
+import { useEffect, useState } from 'react';
+import { IUserReward } from '@/lib/types';
+import getUserInfo from '@/lib/getUserInfo';
+import { useQuery } from '@tanstack/react-query';
 
 const useGetUserRewards = () => {
-  const [userRewards, setUserRewards] = useState<IUserReward[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<null|string>(null)
+  const [userRewards, setUserRewards] = useState<IUserReward[]>([]);
+
+  async function getUserRewards() {
+    const user = await getUserInfo();
+    return await fetch(`/api/userRewards/${user?.id}`).then((res) =>
+      res.json()
+    );
+  }
+
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ['user_rewards'],
+    queryFn: () => getUserRewards(),
+  });
 
   useEffect(() => {
-    
-    const fetchData = async () => {
-      try {
-        const user = await getUserInfo();
-        const response = await fetch(`/api/userRewards/${user?.id}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch rewards')
-        }
-
-        const { rewards: { userRewards } } = await response.json()
-        setUserRewards(userRewards)
-        setLoading(false)
-        console.log(userRewards);
-      } catch (error) {
-        console.log(error)
-        setError('Internal Server Error')
-        setLoading(false)
-      }
+    if (data?.rewards?.userRewards) {
+      const {
+        rewards: { userRewards },
+      } = data;
+      const userRewardsData = userRewards.map((item: IUserReward) => ({
+        id: item.id,
+        quantity: item.quantity,
+        image: item.reward.image,
+        name: item.reward.name,
+        points: item.reward.points,
+        status: item.status,
+      }));
+      setUserRewards(userRewardsData);
     }
+  }, [data]);
 
-    fetchData()
-  }, [])
+  return {
+    userRewards,
+    isLoading,
+    error: data?.error?.message,
+  };
+};
 
-  return { userRewards, loading, error }
-}
-
-export default useGetUserRewards
+export default useGetUserRewards;

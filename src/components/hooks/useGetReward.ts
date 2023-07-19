@@ -1,43 +1,27 @@
-import { useEffect, useState } from 'react'
+import { IReward } from '@/lib/types';
+import { useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 
-const useGetReward = (rewardId:any) => {
-  const [reward, setReward] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string|null>(null)
-
-
-  useEffect(() => {
-    const fetchReward = async () => {
-      try {
-        const response = await fetch(`/api/rewards/${rewardId}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch reward')
-        }
-
-        const rewardData = await response.json()
-        setReward(rewardData.reward)
-        setLoading(false)
-      } catch (error) {
-        console.error(error)
-        setError('Internal Server Error')
-        setLoading(false)
-      }
-    }
-
-    if (rewardId) {
-      fetchReward()
-    } else {
-      setLoading(false)
-    }
-  }, [rewardId])
-
-  return { reward, loading, error }
+async function getReward(rewardId: string) {
+  return await fetch(`/api/rewards/${rewardId}`).then((res) => res.json());
 }
 
-export default useGetReward
+const useGetReward = (rewardId: string) => {
+  const [reward, setReward] = useState<IReward>();
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['reward', rewardId],
+    queryFn: () => getReward(rewardId),
+  });
+
+  useEffect(() => {
+    if (data?.reward) {
+      const { reward } = data;
+      setReward(reward);
+    }
+  }, [data]);
+
+  return { reward, isLoading, error: data?.error?.message };
+};
+
+export default useGetReward;

@@ -1,41 +1,31 @@
-'use client'
-import { useEffect, useState } from 'react'
-import useGetRewards from '@/components/hooks/useGetRewards'
-import { useDeleteReward } from '@/components/hooks/useDeleteReward'
-import { useRouter } from 'next/navigation'
-import { Loader2Icon, Plus, } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import RewardsTable from '@/components/Rewards/RewardsTable'
-import { withAuth } from '@/app/auth/withAuth'
-import { IReward } from '@/lib/types'
+'use client';
+
+import useGetRewards from '@/components/hooks/useGetRewards';
+import { useRouter } from 'next/navigation';
+import { Loader2Icon, Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { withAuth } from '@/app/auth/withAuth';
+import { DataTable } from '@/components/Rewards/Data-table';
+import { allRewardsColumns } from '@/components/Rewards/DashboardColumns';
 
 const Rewards: React.FC = () => {
-  const { rewards, loading, error } = useGetRewards()
-  const { handleRewardDelete, leftRewards: updatedRewards } = useDeleteReward()
-  const [allRewards, setAllRewards] = useState<IReward[]>([])
-  const route = useRouter()
+  const { rewards, isLoading, error } = useGetRewards();
+  const route = useRouter();
 
-  useEffect(() => {
-    setAllRewards(rewards)
-  }, [rewards])
-
-  useEffect(() => {
-    setAllRewards(updatedRewards)
-  }, [updatedRewards])
-
-  if (loading) {
+  if (isLoading) {
     return (
-      <div className='flex justify-center items-center h-full'>
-        <Loader2Icon size={100} color="#00ff04" className="animate-spin inline" />
+      <div className="flex justify-center items-center h-full">
+        <Loader2Icon
+          size={100}
+          color="#00ff04"
+          className="animate-spin inline"
+        />
       </div>
-    )
+    );
   }
 
   if (error) {
-    return <p>Error: {error}</p>
-  }
-  const handleUpdate = async (reward: any) => {
-    route.push(`/dashboard/rewards/${reward.id}`)
+    return <p>Error: {error}</p>;
   }
 
   return (
@@ -43,7 +33,7 @@ const Rewards: React.FC = () => {
       <div className="flex justify-end p-4">
         <Button
           onClick={() => {
-            route.push('/dashboard/rewards/new')
+            route.push('/dashboard/rewards/new');
           }}
         >
           <Plus />
@@ -51,15 +41,10 @@ const Rewards: React.FC = () => {
         </Button>
       </div>
       <div className="p-8">
-        {allRewards.length === 0 ? (
-          <p>No Rewards available.</p>
-        ) : (
-            <RewardsTable allRewards ={allRewards} handleUpdate={handleUpdate} handleRewardDelete={handleRewardDelete} setAllRewards={setAllRewards}
-            />
-        )}
+        <DataTable columns={allRewardsColumns} data={rewards} />
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default withAuth(Rewards);

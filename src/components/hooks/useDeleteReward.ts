@@ -6,6 +6,7 @@ import { IReward } from '@/lib/types'
 export const useDeleteReward = () => {
   const { toast } = useToast()
   const [leftRewards, setLeftRewards] = useState<IReward[]>([])
+  const [deleted, setDeleted] = useState(false)
   const { rewards } = useGetRewards()
 
   const handleRewardDelete = async (reward: any) => {
@@ -17,7 +18,15 @@ export const useDeleteReward = () => {
 
       if (response.ok) {
         
-        setLeftRewards(rewards)
+        // setLeftRewards(rewards)
+         setLeftRewards((rewards:any) => {
+         const updatedRewards = rewards.filter(
+           (item: any) => item.id !== reward.id
+         )
+         setDeleted(true)
+         console.log(deleted);
+         return updatedRewards
+       })
 
         toast({
           title: 'Reward deleted successfully',
@@ -39,5 +48,5 @@ export const useDeleteReward = () => {
      setLeftRewards(rewards)
    }, [rewards])
 
-  return { handleRewardDelete, leftRewards }
+  return { handleRewardDelete, leftRewards, deleted }
 }

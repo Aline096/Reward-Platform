@@ -1,18 +1,15 @@
 'use client'
 
 import { withAuth } from "@/app/auth/withAuth"
-import UserRewardsTable from "@/components/Rewards/UserRewardsTable"
+import { allUserRewardsColumns } from "@/components/Rewards/DashboardColumns"
+import { DataTable } from "@/components/Rewards/Data-table"
 import useGetAllUserRewards from "@/components/hooks/useGetAllUserRewards"
 import { Loader2Icon } from "lucide-react"
-import { useEffect } from "react"
 
 const UserRewards = () => {
-  const { userRewards, loading, error, refetch } = useGetAllUserRewards()
-    useEffect(() => {
-      refetch()
-    }, [refetch])
+  const { userRewards, isLoading, error } = useGetAllUserRewards()
 
-   if (loading) {
+   if (isLoading) {
      return (
        <div className="flex justify-center items-center h-full">
          <Loader2Icon
@@ -32,14 +29,7 @@ const UserRewards = () => {
    return (
      <div>
        <div className="p-8">
-         {userRewards.length === 0 ? (
-           <p>No Rewards available.</p>
-         ) : (
-           <UserRewardsTable
-               userRewards={userRewards}
-               refetch = {refetch}
-           />
-         )}
+        <DataTable key={'_one'} columns={allUserRewardsColumns} data={userRewards} />
        </div>
      </div>
    )

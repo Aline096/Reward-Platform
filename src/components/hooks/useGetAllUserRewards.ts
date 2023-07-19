@@ -1,40 +1,43 @@
-import { useEffect, useState } from 'react'
-import { IUserReward } from '@/lib/types'
+import { useEffect, useState } from 'react';
+import { IAllUserReward } from '@/lib/types';
+import { useQuery } from '@tanstack/react-query';
 
-const useGetAllUserRewards = () => {
-  const [userRewards, setUserRewards] = useState<IUserReward[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<null | string>(null)
-
-  const fetchData = async () => {
-    try {
-      const response = await fetch(`/api/userRewards/`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      if (!response.ok) {
-        throw new Error('Failed to fetch rewards')
-      }
-      const {
-        rewards: { userRewards },
-      } = await response.json()
-
-      setUserRewards(userRewards)
-      setLoading(false)
-    } catch (error) {
-      console.log(error)
-      setError('Internal Server Error')
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    fetchData()
-  }, [])
-
-  return { userRewards, loading, error, refetch:fetchData }
+async function getAllUserRewards() {
+  return await fetch('/api/userRewards/').then((res) => res.json());
 }
 
-export default useGetAllUserRewards
+const useGetAllUserRewards = () => {
+  const [allUserRewards, setAllUserRewards] = useState<IAllUserReward[]>([]);
+
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ['all_user_rewards'],
+    queryFn: () => getAllUserRewards(),
+  });
+
+  useEffect(() => {
+    if (data?.rewards) {
+      const {
+        rewards: { userRewards },
+      } = data;
+      const userRewardsData = userRewards.map((item: IAllUserReward) => ({
+        id: item.id,
+        image: item.reward.image,
+        name: item.reward.name,
+        quantity: item.quantity,
+        points: item.reward.points,
+        username: item.user.username,
+        status: item.status,
+      }));
+      setAllUserRewards(userRewardsData);
+    }
+  }, [data]);
+
+  return {
+    userRewards: allUserRewards,
+    isLoading,
+    error: data?.error?.message,
+    refetch,
+  };
+};
+
+export default useGetAllUserRewards;

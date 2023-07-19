@@ -1,6 +1,5 @@
 import { useToast } from '@/components/ui/use-toast';
 import { useState } from 'react';
-import useGetReward from './useGetReward';
 
 export const useUpdateQuantity = (reward: any) => {
   const { toast } = useToast()
