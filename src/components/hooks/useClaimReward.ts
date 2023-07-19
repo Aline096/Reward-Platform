@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useUpdatePoints } from "./useUpdatePoints"
 import { useUpdateQuantity } from "./useUpdateQuantity"
-import quantitySchema from "@/validation/rewardSchema copy"
+import quantitySchema from "@/validation/quantitySchema"
 
 
 const useClaimReward = (handleClaimReward:any, userId:string,reward:any) => {

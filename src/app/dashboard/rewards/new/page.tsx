@@ -4,17 +4,19 @@ import { useCreateReward } from '@/components/hooks/useCreateReward'
 import RewardForm from '@/components/Rewards/RewardForm'
 
 const Rewards = () => {
-  const { form, onSubmit, handleFileChange, isUploading,loading } = useCreateReward()
+  const {register, handleSubmit, onSubmit, isUploading,loading,errors, newImage } = useCreateReward()
 
   return (
     <div>
       <div >
         <RewardForm
-          form={form}
+          register={register}
+          handleSubmit={handleSubmit}
           onSubmit={onSubmit}
-          handleFileChange={handleFileChange}
           isUploading={isUploading}
           loading={loading}
+          errors={errors}
+          newImage={newImage}
         />
       </div>
     </div>

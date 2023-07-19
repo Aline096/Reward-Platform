@@ -1,7 +1,6 @@
 'use client'
 import { withAuth } from '@/app/auth/withAuth'
 import RewardForm from '@/components/Rewards/RewardForm'
-import useGetReward from '@/components/hooks/useGetReward'
 import { useUpdateReward } from '@/components/hooks/useUpdateReward'
 import { usePathname } from 'next/navigation'
 
@@ -11,17 +10,20 @@ const Rewards = () => {
   if (pathname !== null) {
     id = pathname.split('/').pop()
   }
-  const { form, onSubmit, handleFileChange, isUploading,loading } = useUpdateReward(id)
+  const { register, handleSubmit, onSubmit, isUploading,loading, oldImage,errors,newImage } = useUpdateReward(id)
 
   return (
     <div>
       <RewardForm
         type={'edit'}
-        form={form}
+        register={register}
+        handleSubmit={handleSubmit}
         onSubmit={onSubmit}
-        handleFileChange={handleFileChange}
         isUploading={isUploading}
         loading={loading}
+        previewImage={oldImage}
+        errors={errors}
+        newImage={newImage}
       />
     </div>
   )
