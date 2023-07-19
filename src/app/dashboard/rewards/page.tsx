@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { withAuth } from '@/app/auth/withAuth';
 import { DataTable } from '@/components/Rewards/Data-table';
 import { allRewardsColumns } from '@/components/Rewards/DashboardColumns';
+import { checkAdminAccess } from '../adminAccess';
 
 const Rewards: React.FC = () => {
   const { rewards, isLoading, error } = useGetRewards();
@@ -47,4 +48,4 @@ const Rewards: React.FC = () => {
   );
 };
 
-export default withAuth(Rewards);
+export default withAuth(checkAdminAccess (Rewards))

@@ -52,7 +52,7 @@ const Home: React.FC = () => {
       )}
       {!loadPoints && 'Free Points'}
     </Button>
-  );
+  )
 
   const renderPointsText = () => {
     if (loadUser) {
@@ -62,14 +62,14 @@ const Home: React.FC = () => {
           color="#00ff04"
           className="animate-spin inline"
         />
-      );
+      )
     } else {
-      return userData?.points ? userData.points : 'no';
+      return userData?.points ? userData.points : 'no'
     }
-  };
+  }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-12">
+    <main className="flex min-h-screen flex-col items-center p-12">
       <NavigationMenuBar
         setIsAllRewards={setIsAllRewards}
         setIsUserRewards={setIsUserRewards}
@@ -123,4 +123,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default withAuth(Home);
+export default withAuth(Home)
