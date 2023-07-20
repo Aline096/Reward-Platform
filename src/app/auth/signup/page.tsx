@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -9,14 +9,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { useSignup } from '@/components/hooks/useSignup'
-import LeftHome from '@/components/auth/LeftHome'
-
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { useSignup } from '@/components/hooks/useSignup';
+import LeftHome from '@/components/auth/LeftHome';
+import { Loader2Icon } from 'lucide-react';
+import Link from 'next/link';
 
 const Signup = () => {
-  const {form, onSubmit} = useSignup()
+  const { form, onSubmit, isLoading } = useSignup();
 
   return (
     <div className="flex h-screen justify-center items-center ">
@@ -35,8 +36,7 @@ const Signup = () => {
                     <FormControl>
                       <Input placeholder="Username" {...field} />
                     </FormControl>
-                    <FormDescription>
-                    </FormDescription>
+                    <FormDescription></FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -62,7 +62,11 @@ const Signup = () => {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input type='password' placeholder="Password" {...field} />
+                      <Input
+                        type="password"
+                        placeholder="Password"
+                        {...field}
+                      />
                     </FormControl>
                     <FormDescription></FormDescription>
                     <FormMessage />
@@ -70,7 +74,15 @@ const Signup = () => {
                 )}
               />
               <Button type="submit" className="bg-blue-600 h-10 w-full">
-                Register
+                {isLoading ? (
+                  <Loader2Icon
+                    size={20}
+                    color="#00ff04"
+                    className="animate-spin inline"
+                  />
+                ) : (
+                  'Register'
+                )}
               </Button>
             </form>
           </Form>
@@ -78,17 +90,17 @@ const Signup = () => {
         <div className="mt-8 flex flex-col items-center justify-center gap-4 text-sm">
           <p>
             Already have account? &nbsp;
-            <a
+            <Link
               href="/auth/login"
               className="text-blue-500 self-center font-semibold text-primary hover:underline"
             >
               Login
-            </a>
+            </Link>
           </p>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Signup
+export default Signup;

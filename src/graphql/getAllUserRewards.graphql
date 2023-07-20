@@ -14,6 +14,7 @@ query GetAllUserRewards($limit: Int!, $offset: Int!) {
       id
       image
       name
+      points
       quantity
     }
   }

@@ -8,34 +8,32 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
-import { Loader2Icon, Trash2 } from 'lucide-react'
-import { useState } from 'react'
+} from '@/components/ui/alert-dialog';
+import { Loader2Icon, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 
-const DeleteDialog = ({ reward, handleRewardDelete, setAllRewards}: any) => {
-    const [loading, setLoading] = useState<boolean>(false)
-
+const DeleteDialog = ({ reward, handleRewardDelete, refetch }: any) => {
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleDelete = async (reward: any) => {
-       setLoading(true)
-       await handleRewardDelete(reward)
-       setAllRewards((prevRewards:any) => {
-         const updatedRewards = prevRewards.filter(
-           (item: any) => item.id !== reward.id
-         )
-         return updatedRewards
-       })
-     }
+    setLoading(true);
+    await handleRewardDelete(reward);
+    setLoading(false);
+    refetch();
+  };
   return (
     <div>
       <AlertDialog>
         <AlertDialogTrigger>
-          {loading?<Loader2Icon
-            size={20}
-            color="#00ff04"
-            className="animate-spin inline"
-          />:<Trash2 />}
-          
+          {loading ? (
+            <Loader2Icon
+              size={20}
+              color="#00ff04"
+              className="animate-spin inline"
+            />
+          ) : (
+            <Trash2 />
+          )}
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -56,7 +54,7 @@ const DeleteDialog = ({ reward, handleRewardDelete, setAllRewards}: any) => {
         </AlertDialogContent>
       </AlertDialog>
     </div>
-  )
-}
+  );
+};
 
-export default DeleteDialog
+export default DeleteDialog;

@@ -22,7 +22,7 @@ export const NavigationMenuBar: React.FC<NavigationMenuBarProps> = ({
   setIsUserRewards,
   setIsAllRewards,
 }) => {
-  const { onSubmit: logOut, loading: loadLogout } = useLogout();
+  const { onSubmit: logOut, isLoading: loadLogout } = useLogout();
   return (
     <NavigationMenu>
       <NavigationMenuList>

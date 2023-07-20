@@ -1,16 +1,23 @@
-'use client'
-import { withAuth } from '@/app/auth/withAuth'
-import RewardForm from '@/components/Rewards/RewardForm'
-import { useUpdateReward } from '@/components/hooks/useUpdateReward'
-import { usePathname } from 'next/navigation'
+'use client';
+import { withAuth } from '@/app/auth/withAuth';
+import RewardForm from '@/components/Rewards/RewardForm';
+import { useUpdateReward } from '@/components/hooks/useUpdateReward';
+import { usePathname } from 'next/navigation';
 
 const Rewards = () => {
-  const pathname = usePathname()
-  let id: string | undefined
-  if (pathname !== null) {
-    id = pathname.split('/').pop()
-  }
-  const { register, handleSubmit, onSubmit, isUploading,loading, oldImage,errors,newImage } = useUpdateReward(id)
+  const pathname = usePathname();
+  const id = pathname !== null ? (pathname.split('/').pop() as string) : '';
+
+  const {
+    register,
+    handleSubmit,
+    onSubmit,
+    isUploading,
+    loading,
+    oldImage,
+    errors,
+    newImage,
+  } = useUpdateReward(id);
 
   return (
     <div>
@@ -26,7 +33,7 @@ const Rewards = () => {
         newImage={newImage}
       />
     </div>
-  )
-}
+  );
+};
 
 export default withAuth(Rewards);

@@ -17,9 +17,11 @@ import { useGoogleOauth } from '@/components/hooks/useGoogleOauth';
 import googleIcon from '../../../../public/assets/images/google-icon.svg';
 import { Separator } from '@/components/ui/separator';
 import LeftHome from '@/components/auth/LeftHome';
+import { Loader2Icon } from 'lucide-react';
+import Link from 'next/link';
 
 const Login = () => {
-  const { form, onSubmit } = useLogin();
+  const { form, onSubmit, isLoading } = useLogin();
   const { googleHandler } = useGoogleOauth();
 
   return (
@@ -41,7 +43,7 @@ const Login = () => {
             />
             Signin with google
           </Button>
-          
+
           <span className="flex justify-center items-center gap-2 w-full text-muted-foreground">
             <Separator className="my-4 w-1/5" />
             <p className="text-sm">Or sigin with</p>
@@ -49,7 +51,10 @@ const Login = () => {
           </span>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 md:w-full">
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-8 md:w-full"
+            >
               <FormField
                 control={form.control}
                 name="email"
@@ -86,28 +91,36 @@ const Login = () => {
                 type="submit"
                 className="bg-blue-600 h-10 w-full hover:bg-blue-400"
               >
-                Submit
+                {isLoading ? (
+                  <Loader2Icon
+                    size={20}
+                    color="#00ff04"
+                    className="animate-spin inline"
+                  />
+                ) : (
+                  'Submit'
+                )}
               </Button>
             </form>
           </Form>
         </div>
         <div className="mt-8 flex flex-col items-center justify-center gap-4 text-sm">
-            <a
-              href="/auth/passwordReset"
-              className="text-blue-500 self-center font-semibold text-primary hover:underline"
-              >
-              Forgot your password?
-            </a>
+          <Link
+            href="/auth/passwordReset"
+            className="text-blue-500 self-center font-semibold text-primary hover:underline"
+          >
+            Forgot your password?
+          </Link>
         </div>
         <div className="mt-8 flex flex-col items-center justify-center gap-4 text-sm">
           <p>
             Don&apos;t have account? &nbsp;
-            <a
+            <Link
               href="/auth/signup"
               className="text-blue-500 self-center font-semibold text-primary hover:underline"
             >
               Register
-            </a>
+            </Link>
           </p>
         </div>
       </div>

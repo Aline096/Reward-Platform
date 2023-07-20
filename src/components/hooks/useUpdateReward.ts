@@ -1,25 +1,16 @@
 import { useEffect, useState } from 'react'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { cloudinaryService } from '@/lib/uploadImage'
-import rewardSchema from '@/validation/rewardSchema'
 import { useToast } from '@/components/ui/use-toast'
 import { useRouter } from 'next/navigation'
 import useGetReward from './useGetReward'
+import { FormData } from '@/lib/types'
 
-interface FormData {
-  name: string
-  image: any
-  points: number
-  isAvailable: boolean
-  quantity: number
-}
-
-export const useUpdateReward = (id: string | undefined) => {
+export const useUpdateReward = (id: string) => {
   const { toast } = useToast()
   const [isUploading, setIsUploading] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
-  const { reward, loading: rewardLoading } = useGetReward(id)
+  const { reward, isLoading: rewardLoading } = useGetReward(id)
   const [oldImage, setOldImage] = useState<any>([])
   const [newImage, setNewImage] = useState('')
 
