@@ -1,8 +1,9 @@
-'use client';
-import { withAuth } from '@/app/auth/withAuth';
-import RewardForm from '@/components/Rewards/RewardForm';
-import { useUpdateReward } from '@/components/hooks/useUpdateReward';
-import { usePathname } from 'next/navigation';
+'use client'
+import { withAuth } from '@/app/auth/withAuth'
+import RewardForm from '@/components/Rewards/RewardForm'
+import { useUpdateReward } from '@/components/hooks/useUpdateReward'
+import { usePathname } from 'next/navigation'
+import { checkAdminAccess } from '../../adminAccess'
 
 const Rewards = () => {
   const pathname = usePathname();
@@ -36,4 +37,4 @@ const Rewards = () => {
   );
 };
 
-export default withAuth(Rewards);
+export default withAuth(checkAdminAccess( Rewards));

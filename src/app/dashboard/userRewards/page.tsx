@@ -5,6 +5,8 @@ import { allUserRewardsColumns } from "@/components/Rewards/DashboardColumns"
 import { DataTable } from "@/components/Rewards/Data-table"
 import useGetAllUserRewards from "@/components/hooks/useGetAllUserRewards"
 import { Loader2Icon } from "lucide-react"
+import { useEffect } from "react"
+import { checkAdminAccess } from "../adminAccess"
 
 const UserRewards = () => {
   const { userRewards, isLoading, error } = useGetAllUserRewards()
@@ -35,4 +37,4 @@ const UserRewards = () => {
    )
 }
 
-export default withAuth(UserRewards);
+export default withAuth(checkAdminAccess(UserRewards));
